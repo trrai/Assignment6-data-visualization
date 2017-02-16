@@ -5,7 +5,7 @@ output: html_document
 
 ---
 
-```{r setup, include=FALSE}
+```{r setup, echo= FALSE, include=FALSE}
 library("ggplot2")
 library("dplyr")
 library("knitr")
@@ -45,7 +45,7 @@ Climate change has been a trending debate topic all around the world in the past
 
 Using the data collected by the report, we can analyze the relationship between climate change and a country's GDP. In the following data visuals, we will be able to see how an increase in climate change while time passes correlates to an increase or decrease to a GDP. The data begins in 2010, where every country starts at 0% change. 
 
-This graph shows the difference between a GDP with climate change and a GDP without climate change after 20 years has passed. The data is for the year 2030 and the GDP difference is ranked from -3% to 8.5%. We can see that the difference is fairly minimal at this stage. Almost all countries show little change in GDP when comparing climate change to no climate change. 
+This graph shows the difference between a GDP with climate change and a GDP without climate change after 20 years has passed. The data is for the year 2030 and the GDP difference is ranked from -1% to 3%. We can see that the difference is fairly minimal at this stage. Almost all countries show little change in GDP when comparing climate change to no climate change. 
 
 ```{r 2030 graph, fig.width=25, echo=FALSE}
 
@@ -71,7 +71,7 @@ ggplot(data = gdp_comparison) +
   ylim(-1, 3) + ggtitle("2050 Difference in GDP") + xlab("Country") + ylab("% Change") + theme(axis.text.x = element_text(angle=30, hjust=1), axis.text = element_text(size=20), axis.title = element_text(size=25, face="bold"), plot.title = element_text(size=25, face="bold"))
 ```
 
-Here we have the visual for the year 2090. The change is major from 2050 and even more drastic from 2030. It's clear that the impact climate change is having on every country's GDP grows as time passes. A large majority of the countries have seen a negative difference at this point. Looking at the positive side, Mongolia possess an extreme value of a positive difference of 8.3%, almost 5% above the next highest! 
+Here we have the visual for the year 2090. The change is major from 2050 and even more drastic from 2030. It's clear that the impact climate change is having on every country's GDP grows as time passes. A large majority of the countries have seen a negative difference at this point. Looking at the positive side, Russia possess an extreme value of a positive difference of about 3%, almost a whole percent above the next highest! 
 
 ```{r 2090 graph, fig.width=25, echo = FALSE}
 ggplot(data = gdp_comparison) + 
@@ -80,7 +80,7 @@ ggplot(data = gdp_comparison) +
 
 ### Internet Users
 
-Now, we can see how the number of internet users in a country plays a roll in the overall difference of GDP. The graph below shows the GDP difference in climate change vs. no climate change in 2090. Although, each bar is color coded to represent the number of internet users. The pallet indicates blue as the lowest amount of internet users per 100 citizens, and red represents the highest amount. An analysis of the graph shows that the majority of countries who saw a positive difference had a very high number of internet users, with the exception of Mongolia. Almost all of the countries who have a negative percentage difference are colored in a shade of blue, meaning they have a low number of internet users in their country.
+Now, we can see how the number of internet users in a country plays a roll in the overall difference of GDP. The graph below shows the GDP difference in climate change vs. no climate change in 2090. Although, each bar is color coded to represent the number of internet users. The pallet indicates blue as the lowest amount of internet users per 100 citizens, and red represents the highest amount. An analysis of the graph shows that the majority of countries who saw a positive difference had a very high number of internet users. Almost all of the countries who have a negative percentage difference are colored in a shade of blue, meaning they have a low number of internet users in their country.
 
 ```{r internet graph, fig.width=25, fig.height=10, echo = FALSE}
 
@@ -145,13 +145,4 @@ plot_ly(combined, type="bar", x = ~name.x, y = ~diff_2090, color = ~value,
         size = ~value, text = ~paste("Internet Users per 100: ", value)) %>% layout(title = "Internet Users compared to GDP affected by Climate Change in 2090", xaxis = x_axis_format, yaxis = y_axis_format)
 
 ```
-
-
-
-
-
-
-
-
-
 
