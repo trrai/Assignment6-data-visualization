@@ -24,17 +24,20 @@ CalcPercent<-function(x,y){ #calculate the percent difference
 
 gdp_comparison <- left_join(gdp_with_climate, gdp_without_climate, by = c("ISO3" = "ISO3")) %>% select(ISO3, name.x, X2010.x, X2010.y, X2030.x, X2030.y, X2050.x, X2050.y, X2070.x, X2070.y, X2090.x, X2090.y) %>% mutate(diff_2010 = CalcPercent(X2010.x, X2010.y), diff_2030 = CalcPercent(X2030.x, X2030.y), diff_2050 = CalcPercent(X2050.x, X2050.y), diff_2070 = CalcPercent(X2070.x, X2070.y), diff_2090 = CalcPercent(X2090.x, X2090.y)) %>% select(ISO3,name.x, diff_2010, diff_2030, diff_2050, diff_2070, diff_2090) 
 
-colnames(gdp_comparison)
-internet_users<- filter(worldbank_country, Series.Code == "IT.NET.USER.P2")
+CountriesSubset <- c("USA", "RUS", "CHN", "GBR", "ARE", "MEX", "CAN", "ZAF", "AUS", "JPN", "IND", "DEU")
+
+gdp_comparison<- filter(gdp_comparison, ISO3 %in% CountriesSubset)
+
+internet_users<- filter(worldbank_country, Series.Code == "IT.NET.USER.P2") 
 
 combined<-full_join(gdp_comparison, internet_users, by = c("ISO3" = "Country.Code"))
 
-populations<- filter(worldbank_country, Series.Code == "SP.POP.TOTL")
+combined<- filter(combined, ISO3 %in% CountriesSubset)
 
 ```
 ##Introduction
 
-Climate change has been a trending debate topic all around the world in the past years. It's clear that there could be an enivornmental impact on our planet from climate change, but there may also be a significant _economic_ impact as well! Through the data collected by **Burke, Hsiang, and Miguel (2015)**, we can analyze the difference in a country's GDP with and without climate change. The report below processes their data in 20-year time intervals, from 2010 to 2090. In addition, data collected by the **world bank** provides information on internet users for each country. They have recorded how many people for every 100 citizens use the internet in a country. By analyzing both of these sets of data together, it's clear that the majority of countries with a high number of internet users saw a positive percentage change from a GDP _without_ climate change compared to a GDP _with_ climate change. 
+Climate change has been a trending debate topic all around the world in the past years. It's clear that there could be an enivornmental impact on our planet from climate change, but there may also be a significant _economic_ impact as well! Through the data collected by the provided csv, we can analyze the difference in a country's GDP with and without climate change. The report below processes their data in 20-year time intervals, from 2010 to 2090. Although the data includes most countries in the world, we will only be working with a subset of 12 (United Arab Emirates, India, Mexico, South Africa, Australia, China, United States, Japan, United Kingdom, Germany, Canada, and Russia). In addition, data collected by the world bank provides information on internet users for each country in a single csv file. They have recorded how many people for every 100 citizens use the internet in a country. By analyzing both of these sets of data together, it's clear that the majority of countries with a high number of internet users saw a positive percentage change from a GDP _without_ climate change compared to a GDP _with_ climate change. 
 
 ##Summary
 
@@ -47,8 +50,8 @@ This graph shows the difference between a GDP with climate change and a GDP with
 ```{r 2030 graph, fig.width=25, echo=FALSE}
 
 ggplot(data = gdp_comparison) + 
-  geom_bar(mapping = aes(x = ISO3, y = diff_2030), fill = "black", stat="identity") +
-  ylim(-3, 8.5) + theme(axis.title = element_text(size=30), plot.title = element_text(size=30), axis.text.x = element_text(angle=90, hjust=1)) + ggtitle("2030 Difference in GDP") + xlab("Country Code") + ylab("% Change") 
+  geom_bar(mapping = aes(x = name.x, y = diff_2030), fill = "black", stat="identity") +
+  ylim(-1, 3) + ggtitle("2030 Difference in GDP") + xlab("Country") + ylab("% Change") + theme(axis.text.x = element_text(angle=30, hjust=1), axis.text = element_text(size=20), axis.title = element_text(size=25, face="bold"), plot.title = element_text(size=25, face="bold"))
 
 ```
 
@@ -56,16 +59,23 @@ Another 20 years has passed and we can see the how nearly all countries have fac
 
 ```{r 2050 graph, fig.width=25, echo=FALSE}
 ggplot(data = gdp_comparison) + 
-  geom_bar(mapping = aes(x = ISO3, y = diff_2050), fill = "black", stat="identity") +
-  ylim(-3, 8.5) + theme(axis.title = element_text(size=30), plot.title = element_text(size=30), axis.text.x = element_text(angle=90, hjust=1)) + ggtitle("2050 Difference in GDP") + xlab("Country Code") + ylab("% Change")
+  geom_bar(mapping = aes(x = name.x, y = diff_2050), fill = "black", stat="identity") +
+  ylim(-1.5, 3) + ggtitle("2050 Difference in GDP") + xlab("Country") + ylab("% Change") + theme(axis.text.x = element_text(angle=30, hjust=1), axis.text = element_text(size=20), axis.title = element_text(size=25, face="bold"), plot.title = element_text(size=25, face="bold"))
+```
+
+Now in 2070, the effects of climate change on GDP is starting to grow. What started off as a fairly small percentage change in 2030 has become a concern. You can see how the majority of countries are facing a negative percentage change from a GDP without climate change to a GDP with climate change present. Countries like Canada and Russia are seeing a fairly large positive percentage difference, while economic powerhouses like the U.S and China face a negative difference. 
+
+```{r 2070 graph, fig.width=25, echo=FALSE}
+ggplot(data = gdp_comparison) + 
+  geom_bar(mapping = aes(x = name.x, y = diff_2070), fill = "black", stat="identity") +
+  ylim(-1, 3) + ggtitle("2050 Difference in GDP") + xlab("Country") + ylab("% Change") + theme(axis.text.x = element_text(angle=30, hjust=1), axis.text = element_text(size=20), axis.title = element_text(size=25, face="bold"), plot.title = element_text(size=25, face="bold"))
 ```
 
 Here we have the visual for the year 2090. The change is major from 2050 and even more drastic from 2030. It's clear that the impact climate change is having on every country's GDP grows as time passes. A large majority of the countries have seen a negative difference at this point. Looking at the positive side, Mongolia possess an extreme value of a positive difference of 8.3%, almost 5% above the next highest! 
 
 ```{r 2090 graph, fig.width=25, echo = FALSE}
 ggplot(data = gdp_comparison) + 
-  geom_bar(mapping = aes(x = ISO3, y = diff_2090), fill = "black", stat="identity") +
-  ylim(-3, 8.5) + theme(axis.title = element_text(size=30), plot.title = element_text(size=30), axis.text.x = element_text(angle=90, hjust=1)) + ggtitle("2090 Difference in GDP") + xlab("Country Code") + ylab("% Change")
+  geom_bar(mapping = aes(x = name.x, y = diff_2090), fill = "black", stat="identity") + ggtitle("2090 Difference in GDP") + xlab("Country") + ylab("% Change") + theme(axis.text.x = element_text(angle=30, hjust=1), axis.text = element_text(size=20), axis.title = element_text(size=25, face="bold"), plot.title = element_text(size=25, face="bold"))
 ```
 
 ### Internet Users
@@ -75,7 +85,7 @@ Now, we can see how the number of internet users in a country plays a roll in th
 ```{r internet graph, fig.width=25, fig.height=10, echo = FALSE}
 
   ggplot(data = combined) + 
-  geom_bar(mapping = aes(x = ISO3, y = diff_2090, color = value), fill = "white", stat="identity")+ scale_colour_gradient(limits=c(0, 100), low="blue", high="red") + theme(axis.text.x = element_text(angle=90, hjust=1)) + ylim(-3, 8.5) + ggtitle("2090 Difference in GDP vs. Number of Internet Users") + xlab("Country Code") + ylab("% Change") + labs(color="Number of Internet Users per 100: ") + theme(axis.title = element_text(size=30), plot.title = element_text(size=30),legend.position = "bottom", legend.text=element_text(size=25), legend.title = element_text(size=30), legend.key.height = unit(4, 'lines'), legend.key.width = unit(5, 'lines'))
+  geom_bar(mapping = aes(x = name.x, y = diff_2090, fill = value), stat="identity")+ scale_fill_gradient(limits=c(0, 100), low="blue", high="red") + ggtitle("2090 Difference in GDP vs. Number of Internet Users") + xlab("Country") + ylab("% Change") + labs(fill="Number of Internet Users per 100: ") + theme(axis.text.x = element_text(angle=45, hjust=1), axis.text = element_text(size=25), axis.title = element_text(size=30), plot.title = element_text(size=30),legend.position = "bottom", legend.text=element_text(size=25), legend.title = element_text(size=30), legend.key.height = unit(4, 'lines'), legend.key.width = unit(5, 'lines'))
 
 ```
 
@@ -108,28 +118,40 @@ labels<- c(diff_2030 = "2030", diff_2050 = "2050", diff_2070 = "2070", diff_2090
 
 ggplot(data = world_gdp_combined) +
  geom_polygon(aes(x = long, y = lat, group = group, fill = difference)) +
- coord_quickmap() + facet_wrap(~years, labeller=labeller(years = labels)) + labs(fill="Difference in GDP (%) from presence of climate change: ") + theme(legend.position = "bottom", plot.title = element_text(size=30), axis.text = element_text(size=20), axis.title = element_text(size=30), legend.text=element_text(size=25), legend.title = element_text(size=30), legend.key.height = unit(4, 'lines'), strip.text.x = element_text(size = 25)) + scale_fill_brewer(type = 'qual', palette = 3) + xlab("Longitude") + ylab("Latitude") + ggtitle("GDP Difference Global Visual")
+ coord_quickmap() + facet_wrap(~years, labeller=labeller(years = labels)) + labs(fill="Difference in GDP (%) from presence of climate change: ") + theme(plot.title = element_text(size=30, face = "bold"), axis.text = element_text(size=20), axis.title = element_text(size=30, face = "bold"), legend.text=element_text(size=25), legend.title = element_text(size=30, face = "bold"), legend.key.height = unit(4, 'lines'), legend.position = "bottom", strip.text.x = element_text(size = 25)) + scale_fill_brewer(type = 'qual', palette = 3) + xlab("Longitude") + ylab("Latitude") + ggtitle("GDP Difference Global Visual")
 
 
 ```
 
 
 ## Interactive Visual
+
+We can get a beter understanding of the correlation between Internet users and GDP affected by climate change with the visual below. By hovering over any of the bars on the graph, you're presented with the name of the country, their percentage difference from a GDP without climate change to a GDP with climate change in 2090, and the number of Internet users that specific country has. The citrus tones such as yellow and green represent a higher number of internet users while cool tones such as purple and blue represent a low number of internet users. The majority of the countries with a high number of internet users saw a positive GDP difference while countries who were in the middle of the range, or towards the lower end generally faced a negative percentage difference.
+
 ```{r interactive, fig.width=10, echo=FALSE}
 x_axis_format <- list(
-  title = "COUNTRY (HOVER OVER BARS FOR DETAILS)",
+  title = "Country (Hover over bars for details!)",
+  titlefont = list(size=12),
   showticklabels = FALSE
- 
 )
 
 y_axis_format <- list(
-  title = "GDP DIFFERENCE IN 2090"
+  title = "GDP Difference in 2090",
+  titlefont = list(size=12, weight = "bold")
+
 )
 
 plot_ly(combined, type="bar", x = ~name.x, y = ~diff_2090, color = ~value,
-        size = ~value, text = ~paste("Internet Users per 100: ", value)) %>% layout(xaxis = x_axis_format, yaxis = y_axis_format)
+        size = ~value, text = ~paste("Internet Users per 100: ", value)) %>% layout(title = "Internet Users compared to GDP affected by Climate Change in 2090", xaxis = x_axis_format, yaxis = y_axis_format)
 
 ```
+
+
+
+
+
+
+
 
 
 
